@@ -1,0 +1,23 @@
+{
+  "set": "dev",
+  "version": "0.1.0",
+  "display": "AI 软件开发套装",
+  "plugins": [
+    "base",
+    "dev"
+  ],
+  "required_skills": {
+    "base": [
+      "repo-context",
+      "long-task-state",
+      "doctor"
+    ],
+    "dev": [
+      "plan-spec",
+      "tdd-implement",
+      "code-review"
+    ]
+  },
+  "required_env": [],
+  "optional_env": []
+}

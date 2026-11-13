@@ -1,0 +1,69 @@
+{
+  "name": "agent-stack",
+  "interface": {
+    "displayName": "Agent Stack",
+    "shortDescription": "交给 AI 就装的套装仓库：base / dev / video / all。"
+  },
+  "plugins": [
+    {
+      "name": "base",
+      "source": {
+        "source": "local",
+        "path": "./plugins/base"
+      },
+      "policy": {
+        "installation": "AVAILABLE"
+      },
+      "category": "Productivity",
+      "interface": {
+        "displayName": "Agent Stack — base",
+        "shortDescription": "跨场景通用：文件/检索增强、长任务状态管理、成本可见性、跨工具自检（doctor）。"
+      }
+    },
+    {
+      "name": "dev",
+      "source": {
+        "source": "local",
+        "path": "./plugins/dev"
+      },
+      "policy": {
+        "installation": "AVAILABLE"
+      },
+      "category": "Productivity",
+      "interface": {
+        "displayName": "Agent Stack — dev",
+        "shortDescription": "面向编码 agent 的规划、实现、测试、审查链路。"
+      }
+    },
+    {
+      "name": "video",
+      "source": {
+        "source": "local",
+        "path": "./plugins/video"
+      },
+      "policy": {
+        "installation": "AVAILABLE"
+      },
+      "category": "Productivity",
+      "interface": {
+        "displayName": "Agent Stack — video",
+        "shortDescription": "从 brief / 分镜 / 生成编排到 FFmpeg 后期与交付的视频生产链。"
+      }
+    },
+    {
+      "name": "all",
+      "source": {
+        "source": "local",
+        "path": "./plugins/all"
+      },
+      "policy": {
+        "installation": "AVAILABLE"
+      },
+      "category": "Productivity",
+      "interface": {
+        "displayName": "Agent Stack — all",
+        "shortDescription": "base + dev + video 并集，外加跨场景协作与任务路由元技能。上下文占用更高，只适合确定会跨场景工作的使用者。"
+      }
+    }
+  ]
+}

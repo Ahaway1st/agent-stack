@@ -1,0 +1,5 @@
+Agent Stack — AI 工具套装化安装仓库
+仓库: https://github.com/Ahaway1st/agent-stack
+给 AI 的完整安装说明见 AGENTS.md。
+套装: base（基础） / dev（开发，依赖 base） / video（视频，依赖 base） / all（综合，依赖 base+dev+video）
+安装后必须运行 doctor L1 自检并按契约报告。

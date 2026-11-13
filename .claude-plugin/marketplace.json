@@ -1,0 +1,32 @@
+{
+  "name": "agent-stack",
+  "owner": {
+    "name": "Ahaway1st"
+  },
+  "metadata": {
+    "description": "AI 工具套装化安装仓库：base / dev / video / all 四套，按场景组合 skills、plugins 与 MCP，并附带 doctor 自检。",
+    "version": "0.1.0"
+  },
+  "plugins": [
+    {
+      "name": "base",
+      "source": "./plugins/base",
+      "description": "跨场景通用：文件/检索增强、长任务状态管理、成本可见性、跨工具自检（doctor）。"
+    },
+    {
+      "name": "dev",
+      "source": "./plugins/dev",
+      "description": "面向编码 agent 的规划、实现、测试、审查链路。"
+    },
+    {
+      "name": "video",
+      "source": "./plugins/video",
+      "description": "从 brief / 分镜 / 生成编排到 FFmpeg 后期与交付的视频生产链。"
+    },
+    {
+      "name": "all",
+      "source": "./plugins/all",
+      "description": "base + dev + video 并集，外加跨场景协作与任务路由元技能。上下文占用更高，只适合确定会跨场景工作的使用者。"
+    }
+  ]
+}

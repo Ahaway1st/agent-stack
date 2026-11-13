@@ -1,0 +1,37 @@
+{
+  "set": "all",
+  "version": "0.1.0",
+  "display": "综合套装",
+  "plugins": [
+    "base",
+    "dev",
+    "video",
+    "all"
+  ],
+  "required_skills": {
+    "base": [
+      "repo-context",
+      "long-task-state",
+      "doctor"
+    ],
+    "dev": [
+      "plan-spec",
+      "tdd-implement",
+      "code-review"
+    ],
+    "video": [
+      "brief-analysis",
+      "storyboard-prompt",
+      "ffmpeg-post"
+    ],
+    "all": [
+      "cross-scene-router"
+    ]
+  },
+  "required_env": [],
+  "optional_env": [
+    "IMAGE_API_KEY",
+    "VIDEO_API_KEY",
+    "TTS_API_KEY"
+  ]
+}

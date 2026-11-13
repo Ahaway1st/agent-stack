@@ -1,0 +1,13 @@
+{
+  "name": "all",
+  "version": "0.1.0",
+  "description": "base + dev + video 并集，外加跨场景协作与任务路由元技能。上下文占用更高，只适合确定会跨场景工作的使用者。",
+  "author": {
+    "name": "Ahaway1st"
+  },
+  "dependencies": [
+    "base",
+    "dev",
+    "video"
+  ]
+}

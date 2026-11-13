@@ -1,0 +1,17 @@
+{
+  "set": "base",
+  "version": "0.1.0",
+  "display": "基础套装",
+  "plugins": [
+    "base"
+  ],
+  "required_skills": {
+    "base": [
+      "repo-context",
+      "long-task-state",
+      "doctor"
+    ]
+  },
+  "required_env": [],
+  "optional_env": []
+}

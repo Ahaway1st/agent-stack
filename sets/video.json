@@ -1,0 +1,27 @@
+{
+  "set": "video",
+  "version": "0.1.0",
+  "display": "AI 视频创作套装",
+  "plugins": [
+    "base",
+    "video"
+  ],
+  "required_skills": {
+    "base": [
+      "repo-context",
+      "long-task-state",
+      "doctor"
+    ],
+    "video": [
+      "brief-analysis",
+      "storyboard-prompt",
+      "ffmpeg-post"
+    ]
+  },
+  "required_env": [],
+  "optional_env": [
+    "IMAGE_API_KEY",
+    "VIDEO_API_KEY",
+    "TTS_API_KEY"
+  ]
+}

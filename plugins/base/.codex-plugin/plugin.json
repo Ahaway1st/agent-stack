@@ -1,0 +1,13 @@
+{
+  "name": "base",
+  "version": "0.1.0",
+  "description": "跨场景通用：文件/检索增强、长任务状态管理、成本可见性、跨工具自检（doctor）。",
+  "author": {
+    "name": "Ahaway1st"
+  },
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Agent Stack — base",
+    "shortDescription": "跨场景通用：文件/检索增强、长任务状态管理、成本可见性、跨工具自检（doctor）。"
+  }
+}
