@@ -22,8 +22,8 @@
   已实测：Codex 不会自动解析 plugin 依赖——单独装 dev 后 base 仍显示未安装。所以装 dev/video/all 时，必须先显式装 base，再装目标套装。
 - DeepSeek Harness (DSH)：运行仓库自带脚本 scripts/install-dsh.sh <set>（默认装到 ~/.dsh/skills/，--project 装到项目 .dsh/skills/），它按 sets 定义把 base 在内的各 plugin 的 skills 复制过去。已实测（dsh 0.2.2-rc.1，2026-11-14）：脚本落位正确，dsh 默认 web profile 的 --dump-config 确认包含 skill 文件系统提供者（@deepseek-ai/dsh-skill-filesystem 等）。未验证：模型侧目录是否实际列出这些 skill（需要 DeepSeek API key 才能跑会话验证），报告中须标注这一点。DSH 的 MCP 是 Cordis 插件机制，与本仓库的 .mcp.json 不是一回事；本仓库 v1 套装暂无 MCP 组件，不要假装写入了 MCP 配置。
 - 其他支持 skills CLI 的工具（回退路径）：
-  npx skills add Ahaway1st/agent-stack --skill <set>
-  marketplace 路径不可用时才走回退；回退后同样必须跑 doctor。注意：skills CLI 的 add 命令已实测存在，但 --skill 的套装语义未逐项验证，且它分发的是散装 SKILL.md，与 plugin 套装语义不完全等价，报告时要说明。
+  scripts/install-skills-cli.sh <set>（仓库自带脚本，按 sets 定义把套装展开成逐个 skill 名后调用 npx skills add）
+  marketplace 路径不可用时才走回退；回退后同样必须跑 doctor。实测结论（2026-11-14）：CLI 能发现本仓库全部 13 个 skill，但 --skill 只认 skill 名、不认套装名，不要手写 --skill <set>（会直接失败）；回退分发的是散装 SKILL.md、无 plugin 依赖解析（脚本已连 base 一并展开），报告时要说明与 plugin 路径的差异。
 
 本地/离线测试可用本地路径代替 Ahaway1st/agent-stack 作为 marketplace 源。
 
