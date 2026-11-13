@@ -192,7 +192,7 @@ AI 在安装完成后输出的报告必须包含：套装名称与版本、目�
 
 兼容性声明：v1 的首要支持工具为 Claude Code、Codex CLI、DeepSeek Harness。skills CLI 路径覆盖的其他工具标注为“可用但未经过 v1 评测验证”，不纳入成功指标统计。这一边界必须在 README 中明确，避免使用者产生超出实际的期望。
 
-最后验证版本（v1.1 新增，2026-11-14，本地 marketplace 源实测）：Claude Code 2.1.323（marketplace 校验通过、依赖自动解析成立）、Codex CLI 0.164（安装成立、依赖不自动解析）、doctor L1 四套全通过。GitHub 远程源尚未验证——仓库 github.com/Ahaway1st/agent-stack 截至修订时尚未创建（HTTP 404），远程安装复测是发布前置条件。DSH 最后验证版本：0.2.2-rc.1（2026-11-14 同日补记：install-dsh.sh 落位与默认 web profile 的 skill 提供者构成已实测；模型侧目录实际列出 skill 未验证，需 DeepSeek API key）。
+最后验证版本（v1.1 新增，2026-11-14，本地 marketplace 源实测）：Claude Code 2.1.323（marketplace 校验通过、依赖自动解析成立）、Codex CLI 0.164（安装成立、依赖不自动解析）、doctor L1 四套全通过。GitHub 远程源已验证（2026-11-14 同日补记：仓库已创建并推送，Claude Code 与 Codex 均从 Ahaway1st/agent-stack 远程源完成 marketplace 注册与安装复测）。DSH 最后验证版本：0.2.2-rc.1（2026-11-14 同日补记：install-dsh.sh 落位与默认 web profile 的 skill 提供者构成已实测；模型侧目录实际列出 skill 未验证，需 DeepSeek API key）。
 
 ## 10. 非目标（v1 明确不做）
 
