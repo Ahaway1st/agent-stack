@@ -2,10 +2,22 @@
 
 项目名称：Agent Stack——AI 工具「套装化」安装仓库
 仓库位置：github.com/Ahaway1st/agent-stack
-文档版本：v1.0
+文档版本：v1.1
 日期：2026-11-14
 
-> 本文件为用户 2026-11-14 提供的 PRD 原文存档。实现与验证状态见 README.md / BENCHMARKS.md / AGENTS.md。
+> v1.0 原文归档于 PRD-v1.0.md；实现与验证状态见 README.md / BENCHMARKS.md / AGENTS.md。
+
+## 修订说明（v1.0 → v1.1，2026-11-14）
+
+本次修订基于 v0.1 骨架的实测结果，只改与证据冲突或证据不足的条款，其余设计不变：
+
+- R1（依赖解析，按工具区分）：v1.0 称基础套装「作为其他套装的依赖被自动解析」。实测：Claude Code 2.1.323 成立（install dev 自动带上 base）；Codex CLI 0.164 不成立（单独装 dev 后 base 仍为未安装，Codex 不解析 plugin 依赖）。已修订 2.2、5.2、F2：自动解析仅适用于 Claude Code，其余路径由 AI 按「先 base 后目标套装」的显式顺序执行，对使用者仍透明。
+- R2（开发评测目标）：v1.0 引用的 Opus 4.5（22.0 → 45.3、归一化约 29.9%）与 GPT-5.2（约 20.3%）未能逐项核到论文表格，且口径疑似为全域而非 Software Eng. 子集，已删除，不再作锚点。可核查的事实是：SkillsBench（arXiv:2602.12670）curated skills 全域平均 +16.2 个百分点，而 Software Engineering 域只有约 +4.5 个百分点。因此 3.2 与 7.2 把 dev 的 v1 验收改为「相对 base 在 SE 子集上取得正向且统计可分辨的归一化增益」，≥20% 降为挑战目标。
+- R3（视频评测可用性）：VibeVideoBench 的 L2 Strict 锚点（Opus 5.5 / Claude Code 76.3%、GPT-6 Astra / Codex 74.5%）已核对无误；但 DSH + DeepSeek-V4.1-Flash 57.6% 未能核到，已从锚点中删除。且该 benchmark 截至修订时代码与数据尚未正式放出（"coming soon"）、未经同行评审、评审团包含参赛模型本身。7.3 与 F8 已改为：其官方评测以代码/数据放出为执行前提；在此之前以交付率、返工率等可自测指标先行。
+- R4（未指定意图）：5.2 的意图映射把「未指定 → 推荐 all」改为「未指定 → 先询问」，与 4.2 对 all 的边界声明（上下文占用更高、不适合单一场景）保持一致。
+- R5（doctor 归属）：明确 doctor 是 base 中的单一实现，其他套装经依赖（Claude Code）或显式先行安装 base（其余路径）获得，不在每个套装内维护副本，避免多份实现漂移。
+- R6（已验证版本）：9 节与 11 节补入最后验证版本——Claude Code 2.1.323、Codex CLI 0.164（2026-11-14，本地 marketplace 源实测）；GitHub 远程源因仓库尚未创建（404）未测，列为发布前置条件。
+- R7（skills CLI 回退）：5.2 与 9 节补注：skills CLI 的 add 命令已实测存在，但 --skill 的套装语义未逐项验证，且其分发物是散装 SKILL.md，与 plugin 套装语义不完全等价，报告时必须说明。
 
 ## 1. 背景与问题
 
@@ -31,9 +43,9 @@
 
 仓库即安装包，套装即插件组。不在仓库之外引入额外的安装器二进制。仓库根目录同时声明 Claude Code 的 .claude-plugin/marketplace.json 和 Codex 的 .agents/plugins/marketplace.json，使得 Claude Code 和 Codex 可以在“注册 marketplace → 安装插件”的原生流程中完成套装安装，无需用户理解仓库内部结构。对于 DSH 和其他兼容 skills CLI 的工具，同一套内容通过 npx skills 路径分发，skill 文件复用同一份源，不维护第二套内容。
 
-套装是“可安装的插件”，不是“推荐列表”。每个套装对应 marketplace 中的一个独立 plugin entry。基础套装作为其他套装的依赖被自动解析，而不是要求使用者先装基础再装场景套装。Claude Code 的 marketplace 机制天然支持插件间依赖声明，这一设计使“装开发套装 = 基础 + 开发”对使用者透明。
+套装是“可安装的插件”，不是“推荐列表”。每个套装对应 marketplace 中的一个独立 plugin entry。基础套装是其他套装的依赖，但依赖的落地方式按工具区分（v1.1 修订，依据 2026-11-14 实测）：Claude Code 支持插件间依赖声明，装 dev 时自动带上 base；Codex 不解析 plugin 依赖，必须由 AI 按“先 base、后目标套装”的顺序显式安装。两种方式对使用者都透明——使用者不需要知道自己装了几个 plugin——但实现不能假定所有工具都有依赖自动解析。
 
-自检是安装契约的一部分，不是可选步骤。每个套装附带一个 doctor skill，安装完成后由 AI 自动触发。自检遵循“结构检查 → 冒烟执行 → 报告”的分级模式：默认结构检查在 5 秒内完成、不消耗 token，仅验证预期的 skill 文件、plugin manifest、MCP 配置是否就位且可解析；--live 模式才进行真实的 skill dry-run 和端到端子代理派发。AI 在安装结束后必须报告自检结果，未通过则不宣称安装完成。
+自检是安装契约的一部分，不是可选步骤。每个套装在安装完成后都必须能运行 doctor 自检；doctor 的实现只有一份，放在 base 中，其他套装经依赖解析（Claude Code）或显式先行安装 base（其余路径）获得，不在每个套装内维护副本（v1.1 修订）。自检遵循“结构检查 → 冒烟执行 → 报告”的分级模式：默认结构检查在 5 秒内完成、不消耗 token，仅验证预期的 skill 文件、plugin manifest、MCP 配置是否就位且可解析；--live 模式才进行真实的 skill dry-run 和端到端子代理派发。AI 在安装结束后必须报告自检结果，未通过则不宣称安装完成。
 
 ## 3. 目标与成功指标
 
@@ -51,7 +63,7 @@
 |---|---|---|
 | 安装成功率 | 目标工具中，AI 从收到仓库链接到自检通过的比例 | ≥ 90%（Claude Code / Codex / DSH 分别统计） |
 | 人工干预率 | 安装过程中需要使用者手动输入命令或编辑配置的会话比例 | ≤ 10% |
-| 套装增幅 | 在对应 benchmark 上，套装安装后相对基线的归一化提升 | 开发套装：SkillsBench Software Eng. 归一化增益 ≥ 20%；视频套装：VibeVideoBench L2 Pass 提升 ≥ 8 个百分点（或等效 Human Elo 提升） |
+| 套装增幅 | 在对应 benchmark 上，套装安装后相对基线的归一化提升 | 开发套装（v1.1 修订）：SkillsBench Software Eng. 子集上，dev 相对 base 取得正向且统计可分辨的归一化增益（≥ 20% 为挑战目标，不作 v1 验收线；理由见 7.2）；视频套装：VibeVideoBench L2 Pass 提升 ≥ 8 个百分点（或等效 Human Elo 提升），其执行以该 benchmark 代码/数据正式放出为前提，在此之前以交付率 / 返工率验收（见 7.3） |
 | 自检覆盖率 | 套装声明的必需组件中，被 doctor 默认模式实际检查到的比例 | 100% |
 
 ## 4. 套装设计
@@ -99,12 +111,12 @@
 
 仓库根目录提供一份面向 AI 的 AGENTS.md / llms.txt，其中包含：
 
-1. 套装意图映射：使用者说“开发套装” → 安装 dev plugin；说“视频” → video；说“全套” → all；未指定 → 根据当前工具推荐 all 或询问。
-2. 工具探测与安装路由：
-   · 检测到 Claude Code → claude plugin marketplace add Ahaway1st/agent-stack，然后 claude plugin install base@agent-stack、claude plugin install dev@agent-stack（依赖自动解析）。
-   · 检测到 Codex → codex plugin marketplace add Ahaway1st/agent-stack，然后 codex plugin add <set>@agent-stack。
-   · 检测到 DSH → 将对应套装的 skill 目录复制或链接到 ~/.dsh/skills/ 或项目的 .dsh/skills/，MCP 配置写入 DSH 配置层。
-   · 其他支持 npx skills 的工具 → npx skills add Ahaway1st/agent-stack --skill <set>。
+1. 套装意图映射：使用者说“开发套装” → 安装 dev plugin；说“视频” → video；说“全套” → all；未指定 → 先询问要哪个套装，不默认装 all（v1.1 修订：all 上下文占用更高，与 4.2 的适用边界一致）。
+2. 工具探测与安装路由（v1.1 修订：依赖落地方式按工具区分）：
+   · 检测到 Claude Code → claude plugin marketplace add Ahaway1st/agent-stack，然后 claude plugin install <set>@agent-stack（依赖由 plugin.json 的 dependencies 自动解析，装 dev 时自动带上 base；显式先装 base 亦可，结果等价）。
+   · 检测到 Codex → codex plugin marketplace add Ahaway1st/agent-stack，然后先 codex plugin add base@agent-stack、再 codex plugin add <set>@agent-stack（实测 Codex 不自动解析 plugin 依赖，顺序不可省略）。
+   · 检测到 DSH → 先将 base 的 skill 目录复制或链接到 ~/.dsh/skills/ 或项目的 .dsh/skills/，再处理目标套装，MCP 配置写入 DSH 配置层。
+   · 其他支持 npx skills 的工具 → npx skills add Ahaway1st/agent-stack --skill <set>（回退路径；该 CLI 分发的是散装 SKILL.md，--skill 的套装语义未逐项验证，报告时须说明与 plugin 路径的差异）。
 3. 安装后强制自检：安装动作完成后，AI 必须运行 doctor skill 的默认模式，并将结果以结构化摘要报告给使用者。--live 模式仅在默认模式通过后按需触发。
 4. 失败处理：如果某个 marketplace 路径不可用（版本差异、权限问题），回退到 skills CLI 路径；若仍失败，报告具体失败点，不宣称安装成功。
 
@@ -136,15 +148,19 @@ AI 在安装完成后输出的报告必须包含：套装名称与版本、目�
 
 主指标：SkillsBench Software Eng. 域（Bug Fix、DevOps、ML Repro、Migration）的归一化增益。SkillsBench 由 86 个专家创建、可验证的任务组成，覆盖 11 个专业领域，其中 Software Eng. 是直接对应的域。其“With Skills vs Without Skills”的归一化增益计算方式（(with − without) / (100 − without)）适合用来剥离模型基线差异，单独观察套装带来的增量。
 
-执行方式：在 Claude Code、Codex CLI、DSH 三个 harness 上分别运行同一组 Software Eng. 任务子集，条件为“基础套装 vs 开发套装”。开发套装的增益需显著高于基础套装在该子集上的增益，才认为“场景特化产生了额外价值”。
+执行方式：在 Claude Code、Codex CLI、DSH 三个 harness 上分别运行同一组 Software Eng. 任务子集，条件为“基础套装 vs 开发套装”。开发套装的增益需显著高于基础套装在该子集上的增益，才认为“场景特化产生了额外价值”。评测须锁定所用的 SkillsBench 版本与子集任务清单（该 benchmark 存在 86 任务的论文 v1、84 任务的评测口径与后续注册表版本等不同口径，不锁定版本则数字不可比）。
 
-对照数据参考：SkillsBench 公开数据显示，Claude Code Opus 4.5 在无 skills 条件下得分为 22.0±2.8，有 skills 后升至 45.3±2.5，归一化增益约 29.9%；Codex GPT-5.2 的归一化增益约 20.3%。开发套装的目标是在对应子集上达到或超过这一量级的增益。
+对照数据参考（v1.1 修订，已核查 arXiv:2602.12670）：SkillsBench 中 curated skills 相对无 skills 的提升全域平均约 +16.2 个百分点，但 Software Engineering 域只有约 +4.5 个百分点，是各域中偏弱的——也就是说，公开数据支持的是“skills 整体有效”，而不是“SE 域容易拿到大增益”。v1.0 引用的单模型数字（Opus 4.5 由 22.0 升至 45.3、归一化约 29.9%；GPT-5.2 约 20.3%）未能逐项核到论文表格且口径存疑，v1.1 删除，不再作目标锚点。
+
+据此，dev 套装的 v1 验收线修订为：在 SE 子集上相对 base 取得正向且统计可分辨的归一化增益（报告效应量、样本量与置信区间）；归一化增益 ≥ 20% 保留为挑战目标，在子集实测证明可达之前不作发布门槛。
 
 ### 7.3 视频场景评测
 
-主指标：VibeVideoBench 的 L2 Pass（Strict）和 L3 Overall 质量维度。VibeVideoBench 是专门针对代码驱动视频生成的 benchmark，其 L2 Strict 衡量“严格通过所有核心要求的任务比例”，L3 覆盖视频质量、视觉美学、镜头语言、时序、音频等维度。该 benchmark 的公开 leaderboard 中，Claude Code + Opus 5.5 的 L2 Strict 为 76.3%，Codex CLI + GPT-6 Astra 为 74.5%，DSH + DeepSeek-V4.1-Flash 的 L2 Strict 为 57.6%——这些数字为视频套装的增益评估提供了可比的基线锚点。
+主指标：VibeVideoBench 的 L2 Pass（Strict）和 L3 Overall 质量维度。VibeVideoBench 是专门针对代码驱动视频生成的 benchmark，其 L2 Strict 衡量“严格通过所有核心要求的任务比例”，L3 覆盖视频质量、视觉美学、镜头语言、时序、音频等维度。该 benchmark 的公开 leaderboard 中，Claude Code + Opus 5.5 的 L2 Strict 为 76.3%，Codex CLI + GPT-6 Astra 为 74.5%（两数已于 2026-11-14 核对无误）——这些数字为视频套装的增益评估提供了可比的基线锚点。v1.0 引用的 DSH + DeepSeek-V4.1-Flash 57.6% 未能在公开页面核到，v1.1 删除，核实前不作锚点。
 
-补充指标：对于视频套装，额外记录“交付率”（有可播放视频产出的任务比例）和“返工率”（同一任务中因阶段间信息丢失导致的额外生成调用次数）。后者直接检验“链路衔接”这一搭配假设。
+可用性前提（v1.1 新增）：截至 2026-11-14，VibeVideoBench 的代码与数据集尚未正式放出（项目页标注 coming soon），且未经同行评审、其评审团包含参赛模型本身。因此官方口径评测的执行以代码/数据放出为前提；在此之前，锚点数字只作参考，不作本套装成绩的对照基线。
+
+补充指标（在官方评测可执行之前，以下两项为 video 套装的先行验收指标）：额外记录“交付率”（有可播放视频产出的任务比例）和“返工率”（同一任务中因阶段间信息丢失导致的额外生成调用次数）。后者直接检验“链路衔接”这一搭配假设。
 
 ### 7.4 综合套装评测
 
@@ -159,13 +175,13 @@ AI 在安装完成后输出的报告必须包含：套装名称与版本、目�
 | 编号 | 需求 | 优先级 | 验收标准 |
 |---|---|---|---|
 | F1 | 仓库根目录同时提供 Claude Code 与 Codex 的 marketplace manifest | P0 | 两个工具均可通过原生 marketplace 命令发现并安装套装 |
-| F2 | 四套套装作为独立 plugin entry，依赖关系可被自动解析 | P0 | 安装 dev 时 base 被自动拉取，使用者无需显式操作 |
+| F2 | 四套套装作为独立 plugin entry，依赖关系按工具落地 | P0 | Claude Code：安装 dev 时 base 被自动拉取；Codex / DSH / 回退路径：AI 按显式顺序先装 base；两种情况下使用者均无需显式操作（v1.1 修订） |
 | F3 | AGENTS.md / llms.txt 包含意图映射和安装路由 | P0 | AI 读取后能在三种工具上自主选择正确路径 |
-| F4 | 每个套装附带 doctor skill，L1 检查 < 5s、不消耗 token | P0 | 安装后自动触发，报告包含必需组件和环境变量状态 |
+| F4 | 每个套装安装后可运行 doctor 自检（单一实现位于 base，见 2.2），L1 检查 < 5s、不消耗 token | P0 | 安装后自动触发，报告包含必需组件和环境变量状态 |
 | F5 | DSH 安装路径可用 | P0 | skill 进入 ~/.dsh/skills/ 或项目 .dsh/skills/，MCP 配置正确写入 |
 | F6 | skills CLI 回退路径可用 | P1 | 在 marketplace 路径不可用时，安装仍能完成 |
 | F7 | 密钥缺失时显式列出，不静默跳过 | P0 | doctor 报告包含“待使用者提供”清单 |
-| F8 | BENCHMARKS.md 包含四套装的评测数据 | P1 | 开发套装和视频套装均有对应 benchmark 的条件对比 |
+| F8 | BENCHMARKS.md 包含四套装的评测数据 | P1 | 开发套装有 SkillsBench 条件对比；视频套装在 VibeVideoBench 代码/数据放出后补齐官方口径对比，在此之前 BENCHMARKS.md 须记录锚点、阻塞状态与交付率/返工率数据，不留空白冒充已测（v1.1 修订） |
 | F9 | 综合套装的跨场景切换评测 | P2 | 有完成度与上下文代价的对比数据 |
 
 ## 9. 非功能需求
@@ -175,6 +191,8 @@ AI 在安装完成后输出的报告必须包含：套装名称与版本、目�
 安全性：套装中的 hooks 和 MCP server 配置在安装前向使用者展示（AI 在安装过程中摘要呈现，或指引至对应文件），密钥仅以环境变量引用形式处理，不写入仓库文件。doctor 的 L1 检查不执行任何用户提供的脚本。
 
 兼容性声明：v1 的首要支持工具为 Claude Code、Codex CLI、DeepSeek Harness。skills CLI 路径覆盖的其他工具标注为“可用但未经过 v1 评测验证”，不纳入成功指标统计。这一边界必须在 README 中明确，避免使用者产生超出实际的期望。
+
+最后验证版本（v1.1 新增，2026-11-14，本地 marketplace 源实测）：Claude Code 2.1.323（marketplace 校验通过、依赖自动解析成立）、Codex CLI 0.164（安装成立、依赖不自动解析）、doctor L1 四套全通过。GitHub 远程源尚未验证——仓库 github.com/Ahaway1st/agent-stack 截至修订时尚未创建（HTTP 404），远程安装复测是发布前置条件。DSH 最后验证版本：无（未测）。
 
 ## 10. 非目标（v1 明确不做）
 
@@ -193,3 +211,7 @@ Skill 之间的干扰尚未被充分研究。多个 skill 同时激活时，是�
 DSH 的开发者预览状态。DSH 仍处于快速迭代阶段，官方明确声明会有不兼容更新。DSH 的安装路径和自检逻辑需要在每个 DSH 发布周期中重新验证，不能假设 v1 的适配长期有效。产品层面应在 README 中标注 DSH 支持的“最后验证版本”。
 
 评测的样本量与统计效力。SkillsBench 和 VibeVideoBench 的完整运行成本较高。v1 的评测将使用分层抽样子集，并报告置信区间和样本量，不将小样本上的增益差异过度解读为确定性结论。
+
+评测基础设施的可用性（v1.1 新增）。VibeVideoBench 截至 2026-11-14 代码与数据未正式放出，video 套装的官方口径评测存在外部依赖阻塞；应对方式是 7.3 的先行指标（交付率、返工率）与 BENCHMARKS.md 的阻塞状态记录，放出后按锁定的版本补跑，而不是用其他来源的数字替代。
+
+引用数字的核查纪律（v1.1 新增）。v1.0 曾引用两组未能核实的数据（SkillsBench 单模型增益、VibeVideoBench 的 DSH 分数），均已在 v1.1 删除或降级。后续写入 PRD / README / BENCHMARKS.md 的外部数字，必须能指到公开来源的原文位置；指不到的一律标注“待核”，不得作为目标锚点或验收依据。

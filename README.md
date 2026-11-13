@@ -1,6 +1,6 @@
 # Agent Stack — AI 工具「套装化」安装仓库
 
-一个「交给 AI 就装」的套装仓库：把仓库链接和目标（开发 / 视频 / 综合）告诉 AI 工具，AI 自行完成 skills、plugins、MCP 的安装、配置与自检；每个套装附带基于公开 benchmark 的能力增幅目标，见 [BENCHMARKS.md](BENCHMARKS.md)。产品定义见 [PRD.md](PRD.md)（v1.0，2026-11-14）。
+一个「交给 AI 就装」的套装仓库：把仓库链接和目标（开发 / 视频 / 综合）告诉 AI 工具，AI 自行完成 skills、plugins、MCP 的安装、配置与自检；每个套装附带基于公开 benchmark 的能力增幅目标，见 [BENCHMARKS.md](BENCHMARKS.md)。产品定义见 [PRD.md](PRD.md)（v1.1，2026-11-14；v1.0 原文归档于 PRD-v1.0.md）。
 
 ## 套装
 
