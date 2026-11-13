@@ -1,6 +1,6 @@
 {
   "set": "base",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "display": "基础套装",
   "plugins": [
     "base"
@@ -9,6 +9,7 @@
     "base": [
       "repo-context",
       "long-task-state",
+      "cost-visibility",
       "doctor"
     ]
   },

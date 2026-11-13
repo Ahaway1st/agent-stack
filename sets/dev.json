@@ -1,6 +1,6 @@
 {
   "set": "dev",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "display": "AI 软件开发套装",
   "plugins": [
     "base",
@@ -10,12 +10,14 @@
     "base": [
       "repo-context",
       "long-task-state",
+      "cost-visibility",
       "doctor"
     ],
     "dev": [
       "plan-spec",
       "tdd-implement",
-      "code-review"
+      "code-review",
+      "ci-check"
     ]
   },
   "required_env": [],

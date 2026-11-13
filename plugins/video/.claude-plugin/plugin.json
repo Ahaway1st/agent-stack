@@ -1,6 +1,6 @@
 {
   "name": "video",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "从 brief / 分镜 / 生成编排到 FFmpeg 后期与交付的视频生产链。",
   "author": {
     "name": "Ahaway1st"

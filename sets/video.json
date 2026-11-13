@@ -1,6 +1,6 @@
 {
   "set": "video",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "display": "AI 视频创作套装",
   "plugins": [
     "base",
@@ -10,11 +10,13 @@
     "base": [
       "repo-context",
       "long-task-state",
+      "cost-visibility",
       "doctor"
     ],
     "video": [
       "brief-analysis",
       "storyboard-prompt",
+      "generation-orchestration",
       "ffmpeg-post"
     ]
   },

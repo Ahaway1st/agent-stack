@@ -23,11 +23,13 @@
 ## 支持边界（v1）
 
 - 首要支持：Claude Code、Codex CLI、DeepSeek Harness (DSH)。
-- 验证状态（2026-11-14，本地源实测；GitHub 远程源待仓库推送后复测）：
+- 验证状态（2026-11-14 实测；GitHub 远程源待仓库创建后复测）：
   - Claude Code 2.1.323：marketplace validate 通过；install dev 自动带上 base 依赖 ✔
   - Codex CLI 0.164：marketplace add / plugin add 均可装；但**不自动解析依赖**，需先装 base ✔（差异已写入 AGENTS.md）
-  - doctor L1：四套全部通过，单套检查约 0.001s ✔
-  - DSH 路径、skills CLI 回退路径：**尚未实测**，使用时以 doctor 报告为准，不要预设成功。
+  - doctor L1：四套全部通过，单套检查约 0.001s ✔；L2（--live）脚本部分已实现（skill 加载 dry-run、脚本语法、已安装状态核对），子代理派发部分需在 harness 会话内由 AI 执行 ✔/部分
+  - DSH（0.2.2-rc.1）：scripts/install-dsh.sh 落位实测通过，dsh 默认 web profile 确认含 skill 文件系统提供者 ✔（结构层）；模型侧目录实际列出 skill 未验证（需 DeepSeek API key）
+  - skills CLI 回退路径：命令存在，--skill 套装语义**尚未实测**，使用时以 doctor 报告为准，不要预设成功。
+  - skill 内容：v0.2.0 起为真实内容（13 个 skill），不再是占位骨架。
 - 仓库不内置任何密钥；缺失的环境变量会由 doctor 列为「待使用者提供」。
 - v1 安装是一次性快照，不做自动更新。
 

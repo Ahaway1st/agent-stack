@@ -1,6 +1,6 @@
 {
   "set": "all",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "display": "综合套装",
   "plugins": [
     "base",
@@ -12,16 +12,19 @@
     "base": [
       "repo-context",
       "long-task-state",
+      "cost-visibility",
       "doctor"
     ],
     "dev": [
       "plan-spec",
       "tdd-implement",
-      "code-review"
+      "code-review",
+      "ci-check"
     ],
     "video": [
       "brief-analysis",
       "storyboard-prompt",
+      "generation-orchestration",
       "ffmpeg-post"
     ],
     "all": [

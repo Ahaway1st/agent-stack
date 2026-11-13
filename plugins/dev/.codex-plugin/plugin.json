@@ -1,6 +1,6 @@
 {
   "name": "dev",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "面向编码 agent 的规划、实现、测试、审查链路。",
   "author": {
     "name": "Ahaway1st"
